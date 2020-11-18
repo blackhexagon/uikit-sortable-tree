@@ -21,8 +21,10 @@ module.exports = {
     ],
   },
   output: {
+    library: 'uikit-sortable-tree',
+    libraryTarget: 'umd',
+    filename: 'uikit-sortable-tree.js',
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
   },
   resolve: {
     fallback: {
