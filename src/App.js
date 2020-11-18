@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import SortableTree, {
   changeNodeAtPath,
   addNodeUnderParent,
@@ -6,7 +7,6 @@ import SortableTree, {
   getFlatDataFromTree,
 } from "react-sortable-tree";
 import "react-sortable-tree/style.css";
-import { useState } from "react";
 import theme from "./theme";
 import uniqueString from "unique-string";
 
