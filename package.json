@@ -3,16 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-scripts": "4.0.0",
-    "react-sortable-tree": "^2.8.0",
-    "uikit": "^3.5.9",
-    "unique-string": "^2.0.0"
+    "uikit": "^3.5.9"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "dist": "SET NODE_ENV=production&&webpack",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -34,6 +30,11 @@
     ]
   },
   "devDependencies": {
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-scripts": "4.0.0",
+    "react-sortable-tree": "^2.8.0",
+    "unique-string": "^2.0.0",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.5",
