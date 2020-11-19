@@ -22,9 +22,14 @@ function App({
   defaultLocale = locales[0][0],
 }) {
   const [locale, setLocale] = useState(defaultLocale);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [data, setData] = useState(() =>
     getTreeFromFlatData({
-      flatData: initialData.map((node) => ({ ...node, title: node.title })),
+      flatData: initialData.map((node) => ({
+        ...node,
+        title: node.title,
+        expanded: true,
+      })),
       getKey: (node) => node.id, // resolve a node's key
       getParentKey: (node) => node.parent, // resolve a node's parent's key
       rootKey: null, // The value of the parent key when there is no parent (i.e., at root level)
@@ -97,6 +102,13 @@ function App({
     );
   };
 
+  const toggleExpansion = () => {
+    setIsExpanded(!isExpanded);
+    isExpanded
+      ? setData(data.map((it) => ({ ...it, expanded: false })))
+      : setData(data.map((it) => ({ ...it, expanded: true })));
+  };
+
   return (
     <>
       <div style={{ height }} className={"uk-padding-small uk-overflow-hidden"}>
@@ -119,6 +131,12 @@ function App({
           data-uk-icon="git-branch"
           style={{ transform: "rotate(90deg)" }}
           onClick={handleAddRootItem}
+        />
+        <button
+          title={isExpanded ? translations.shrink : translations.expand}
+          className={"uk-icon-button uk-margin-left"}
+          data-uk-icon={isExpanded ? "shrink" : "expand"}
+          onClick={toggleExpansion}
         />
         <SortableTree
           treeData={data}

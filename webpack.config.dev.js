@@ -6,7 +6,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin");
 const name = "uikit-sortable-tree";
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/dev.js",
   mode: "development",
   plugins: [
     new MiniCssExtractPlugin({
