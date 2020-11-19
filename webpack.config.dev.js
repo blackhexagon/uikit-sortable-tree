@@ -51,8 +51,6 @@ module.exports = {
     compress: true,
     port: 9000,
     open: true,
-    historyApiFallback: true, // react router
-    hot: true, // hot module replacement (development only)
   },
   output: {
     filename: `${name}.js`,

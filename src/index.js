@@ -8,8 +8,11 @@ import "uikit/dist/css/uikit.css";
 export default function initUIKitSortableTree({
   element = document.querySelector("[uk-tree]"),
   data = [],
+  defaultLocale,
+  locales = [],
   onSave = () => {},
-  locale = {
+  onEdit = null,
+  translations = {
     add: "Add",
     save: "Save",
     empty: "(Empty)",
@@ -17,34 +20,46 @@ export default function initUIKitSortableTree({
   height = 400,
 }) {
   UIkit.use(Icons);
-  if (element) {
-    ReactDOM.render(
-      <App
-        initialData={data}
-        onSave={onSave}
-        locale={locale}
-        height={height}
-      />,
-      element
-    );
-  } else {
-    console.error("Provided element is not valid");
-  }
+
+  if (!element) throw new Error("Provided element is not valid");
+
+  if (locales.length === 0) throw new Error("Provide locales");
+
+  ReactDOM.render(
+    <App
+      defaultLocale={defaultLocale}
+      initialData={data}
+      onSave={onSave}
+      onEdit={onEdit}
+      translations={translations}
+      height={height}
+      locales={locales}
+    />,
+    element
+  );
 }
 
 initUIKitSortableTree({
   element: document.getElementById("root"),
   data: [
-    { id: 1, name: "Novinky", parent: null },
-    { id: 2, name: "Galerie", parent: null },
-    { id: 3, name: "Interiéry", parent: 2 },
-    { id: 4, name: "Praha", parent: 3 },
+    { id: 1, title: { cs: "Novinky", en: "News" }, parent: null },
+    { id: 2, title: { cs: "Galerie", en: "Gallery" }, parent: null },
+    { id: 3, title: { cs: "Interiéry", en: "Interiors" }, parent: 2 },
+    { id: 4, title: { cs: "Praha", en: "Prague" }, parent: 3 },
   ],
   onSave: (data) => {
     console.log(data);
   },
+  onEdit: (id) => {
+    console.log(id);
+  },
   height: "80vh",
-  locale: {
+  locales: [
+    ["cs", "Čeština"],
+    ["en", "Angličtina"],
+  ],
+  defaultLocale: "cs",
+  translations: {
     add: "Přidat",
     save: "Uložit",
     empty: "(Prázdné)",

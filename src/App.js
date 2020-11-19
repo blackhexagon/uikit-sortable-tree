@@ -12,17 +12,32 @@ import uniqueString from "unique-string";
 
 const getNodeKey = ({ treeIndex }) => treeIndex;
 
-function App({ initialData, onSave, locale, height }) {
+function App({
+  initialData,
+  onSave,
+  onEdit,
+  translations,
+  height,
+  locales,
+  defaultLocale = locales[0][0],
+}) {
+  const [locale, setLocale] = useState(defaultLocale);
   const [data, setData] = useState(() =>
     getTreeFromFlatData({
-      flatData: initialData.map((node) => ({ ...node, title: node.name })),
+      flatData: initialData.map((node) => ({ ...node, title: node.title })),
       getKey: (node) => node.id, // resolve a node's key
       getParentKey: (node) => node.parent, // resolve a node's parent's key
       rootKey: null, // The value of the parent key when there is no parent (i.e., at root level)
     })
   );
 
-  const createNewNode = () => ({ title: locale.empty, id: uniqueString() });
+  const createNewNode = () => ({
+    title: locales.reduce((acc, [key]) => {
+      acc[key] = translations.empty;
+      return acc;
+    }, {}),
+    id: uniqueString(),
+  });
 
   const handleChange = (newData) => {
     setData(newData);
@@ -61,7 +76,7 @@ function App({ initialData, onSave, locale, height }) {
         treeData: data,
         path,
         getNodeKey,
-        newNode: { ...node, title: value },
+        newNode: { ...node, title: { ...node.title, [locale]: value } },
       })
     );
   };
@@ -74,7 +89,7 @@ function App({ initialData, onSave, locale, height }) {
         ignoreCollapsed: false,
       }).map(({ node, path }) => ({
         id: node.id,
-        name: node.title,
+        title: node.title,
         // The last entry in the path is this node's key
         // The second to last entry (accessed here) is the parent node's key
         parent: path.length > 1 ? path[path.length - 2] : null,
@@ -85,8 +100,21 @@ function App({ initialData, onSave, locale, height }) {
   return (
     <>
       <div style={{ height }} className={"uk-padding-small uk-overflow-hidden"}>
+        {locales.length > 0 && (
+          <ul className={"uk-tab"}>
+            {locales.map(([key, name]) => (
+              <li
+                key={key}
+                className={key === locale ? "uk-active" : ""}
+                onClick={() => setLocale(key)}
+              >
+                <a href={"#"}>{name}</a>
+              </li>
+            ))}
+          </ul>
+        )}
         <button
-          title={locale.add}
+          title={translations.add}
           className={"uk-icon-button uk-margin-left"}
           data-uk-icon="git-branch"
           style={{ transform: "rotate(90deg)" }}
@@ -105,6 +133,14 @@ function App({ initialData, onSave, locale, height }) {
                 style={{ transform: "rotate(90deg)" }}
                 key={"add"}
               />,
+              typeof node.id === "number" && onEdit ? (
+                <button
+                  className={"uk-icon-button"}
+                  onClick={() => onEdit(node.id)}
+                  data-uk-icon="pencil"
+                  key={"edit"}
+                />
+              ) : null,
               <button
                 className={"uk-icon-button"}
                 onClick={() => handleRemoveItem(path)}
@@ -115,7 +151,7 @@ function App({ initialData, onSave, locale, height }) {
             title: (
               <input
                 className={"uk-input"}
-                value={node.title}
+                value={node.title[locale]}
                 onChange={(event) => handleChangeTitle(path, node, event)}
               />
             ),
@@ -126,7 +162,7 @@ function App({ initialData, onSave, locale, height }) {
         className={"uk-button uk-button-primary uk-margin-top"}
         onClick={handleExport}
       >
-        {locale.save}
+        {translations.save}
       </button>
     </>
   );
